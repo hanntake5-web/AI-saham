@@ -1,225 +1,193 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trading Master AI</title>
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Trading Master AI — Analisa Saham Indonesia</title>
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
-
-body{
-background:#f5f5f5;
-padding:20px;
-}
-
-.container{
-max-width:500px;
-margin:auto;
-}
-
-.card{
-background:#fff;
-border-radius:20px;
-padding:20px;
-margin-bottom:20px;
-box-shadow:0 5px 20px rgba(0,0,0,.1);
-}
-
-.title{
-font-size:26px;
-font-weight:bold;
-margin-bottom:15px;
-text-align:center;
-}
-
-.upload{
-border:2px dashed #ccc;
-border-radius:15px;
-padding:40px;
-text-align:center;
-cursor:pointer;
-}
-
-.upload input{
-display:none;
-}
-
-.btn{
-margin-top:15px;
-width:100%;
-padding:15px;
-border:none;
-border-radius:12px;
-background:#00c853;
-color:white;
-font-size:18px;
-font-weight:bold;
-}
-
-.status{
-display:none;
-margin-top:20px;
-padding:15px;
-border-radius:15px;
-background:#00c853;
-color:white;
-font-size:22px;
-font-weight:bold;
-text-align:center;
-}
-
-.box{
-margin-top:15px;
-background:#f8f8f8;
-padding:15px;
-border-radius:15px;
-}
-
-.row{
-display:flex;
-justify-content:space-between;
-margin:8px 0;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<div class="container">
-
-<div class="card">
-
-<div class="title">
-TRADING MASTER AI
-</div>
-
-<label class="upload">
-
-<input type="file" id="gambar">
-
-📷
-
-<br><br>
-
-Upload Screenshot Saham
-
-</label>
-
-<button class="btn" onclick="analisa()">
-
-ANALISA SEKARANG
-
-</button>
-
-<div class="status" id="hasil">
-
-🤖 AI Sedang Menganalisa...
-
-</div>
-
-<div class="box">
-
-<b>Rekomendasi Beli</b>
-
-<div class="row"><span>Antrian 1</span><span id="b1">-</span></div>
-
-<div class="row"><span>Antrian 2</span><span id="b2">-</span></div>
-
-<div class="row"><span>Antrian 3</span><span id="b3">-</span></div>
-
-<div class="row"><span>Antrian 4</span><span id="b4">-</span></div>
-
-<div class="row"><span>Antrian 5</span><span id="b5">-</span></div>
-
-</div>
-
-<div class="box">
-
-<b>Target Jual</b>
-
-<div class="row"><span>Target 1</span><span id="t1">-</span></div>
-
-<div class="row"><span>Target 2</span><span id="t2">-</span></div>
-
-<div class="row"><span>Target 3</span><span id="t3">-</span></div>
-
-</div>
-
-</div>
-
-</div>
-<input type="file" id="upload" accept="image/*">
-
-<img id="preview"
-style="
-width:100%;
-margin-top:15px;
-border-radius:15px;
-display:none;
-">
-
-<button id="analisa">
-Analisa Screenshot
-</button>
-
-<div id="hasil"></div>
-<script>
-
-
-
-const WEBAPP="https://script.google.com/macros/s/AKfycbw1NXR_EnmXsb1w_ChgtovCDG3kOgNlds_Jr9TSeDeNxF1InUprMPrlsM8S8op89ZRk/exec";
-
-const upload=document.getElementById("upload");
-const preview=document.getElementById("preview");
-const hasil=document.getElementById("hasil");
-const tombol=document.getElementById("analisa");
-
-let base64="";
-
-upload.onchange=(e)=>{
-  const file=e.target.files[0];
-  preview.src=URL.createObjectURL(file);
-  preview.style.display="block";
-
-  const reader=new FileReader();
-  reader.onload=()=>{
-    base64=reader.result.split(",")[1];
-  };
-  reader.readAsDataURL(file);
-};
-
-tombol.onclick=async()=>{
-
-  if(base64==""){
-    alert("Upload screenshot dulu");
-    return;
+  :root {
+    --bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#0f172a;--muted:#64748b;
+    --bull:#10b981;--bear:#ef4444;--avoid:#f59e0b;--rebound:#0ea5e9;
   }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:linear-gradient(180deg,#f8fafc 0%,#fff 100%);color:var(--text);min-height:100vh;line-height:1.5}
+  .wrap{max-width:720px;margin:0 auto;padding:56px 20px}
+  .badge{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--border);
+    border-radius:999px;padding:6px 14px;font-size:12px;color:var(--muted);box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  h1{font-size:40px;font-weight:700;letter-spacing:-.02em;margin-top:24px}
+  .sub{color:var(--muted);font-size:15px;margin:16px auto 0;max-width:480px}
+  .sub b.bull{color:var(--bull)}.sub b.bear{color:var(--bear)}.sub b.avoid{color:var(--avoid)}.sub b.rebound{color:var(--rebound)}
+  form{margin-top:40px}
+  .search{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);
+    border-radius:16px;padding:8px;transition:border-color .2s}
+  .search:focus-within{border-color:#94a3b8}
+  .search input{flex:1;border:none;background:transparent;padding:10px;font-size:16px;text-transform:uppercase;letter-spacing:.04em;color:var(--text)}
+  .search input::placeholder{text-transform:none;letter-spacing:normal;color:#94a3b8}
+  .search input:focus{outline:none}
+  .btn{border:none;cursor:pointer;background:#0f172a;color:#fff;border-radius:12px;padding:10px 20px;font-size:14px;font-weight:600}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  #status{margin-top:48px;text-align:center;color:var(--muted);font-size:14px}
+  #status .spinner{width:28px;height:28px;border-color:rgba(100,116,139,.3);border-top-color:var(--muted);margin-bottom:12px}
+  #error{margin-top:40px;background:#fef2f2;color:var(--bear);border-radius:16px;padding:18px;text-align:center;font-size:14px}
+  #result{margin-top:40px;display:none}
+  .verdict{border-radius:24px;padding:32px;color:#fff;margin-bottom:20px;box-shadow:0 20px 60px -15px rgba(0,0,0,.25)}
+  .verdict.bull{background:var(--bull)}.verdict.bear{background:var(--bear)}
+  .verdict.avoid{background:var(--avoid);color:#1a1206}.verdict.rebound{background:var(--rebound)}
+  .verdict .top{display:flex;justify-content:space-between;font-size:12px;font-weight:600;letter-spacing:.1em;opacity:.85}
+  .verdict .head{display:flex;align-items:center;gap:16px;margin-top:24px}
+  .verdict .icon{width:48px;height:48px;border-radius:16px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:26px}
+  .verdict .label{font-size:22px;font-weight:700}
+  .verdict .summary{margin-top:20px;font-size:15px;opacity:.92}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}h1{font-size:30px}}
+  .card{background:#fff;border:1px solid var(--border);border-radius:24px;padding:24px}
+  .card h3{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+  .qlist{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+  .qrow{display:flex;align-items:center;justify-content:space-between;background:#f8fafc;border-radius:16px;padding:12px 16px}
+  .qnum{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border:1px solid}
+  .qnum.em{color:var(--bull);background:#ecfdf5;border-color:#d1fae5}
+  .qnum.rd{color:var(--bear);background:#fef2f2;border-color:#fee2e2}
+  .qprice{font-size:17px;font-weight:600}
+  .mini{background:#fff;border:1px solid var(--border);border-radius:24px;padding:24px}
+  .mini h3{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+  .mini .big{margin-top:12px;font-size:26px;font-weight:700;color:var(--bear)}
+  .mini p{margin-top:12px;font-size:14px;color:#475569}
+  .disc{margin-top:12px;font-size:12px;text-align:center;color:#94a3b8}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div style="text-align:center">
+    <span class="badge">📊 Analisa Saham Indonesia · Bertenaga AI</span>
+    <h1>Trading Master AI</h1>
+    <p class="sub">
+      Masukkan kode saham (misalnya BBCA) untuk mengetahui arah
+      <b class="bull">Bullish</b>, <b class="bear">Bearish</b>, <b class="avoid">Hindari</b>,
+      atau <b class="rebound">Potensi Naik dari Turun</b>, lengkap dengan antrian beli & jual.
+    </p>
+  </div>
 
-  hasil.style.display="block";
-  hasil.innerHTML="🤖 AI sedang menganalisa...";
+  <form id="form">
+    <div class="search">
+      <input id="ticker" placeholder="Masukkan kode saham, contoh: BBCA" autocomplete="off" required />
+      <button class="btn" id="submitBtn" type="submit">Analisa</button>
+    </div>
+  </form>
 
-  const res=await fetch(WEBAPP,{
-    method:"POST",
-    body:JSON.stringify({image:base64})
-  });
+  <div id="status" style="display:none">
+    <div class="spinner"></div>
+    <p id="statusText">AI sedang menganalisa...</p>
+  </div>
+  <div id="error" style="display:none"></div>
+  <div id="result"></div>
+  <p class="disc">Analisa dihasilkan oleh AI dan bukan saran finansial. Selalu lakukan riset sendiri.</p>
+</div>
 
-  const data=await res.json();
+<script>
+const API_KEY = "GANTI_DENGAN_API_KEY_GEMINI_ANDA";
+const MODEL = "gemini-2.5-flash";
+const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
 
-  hasil.innerHTML=data.hasil;
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => (n === null || n === undefined) ? "-" : "Rp " + Number(n).toLocaleString("id-ID");
 
-};
+$("form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const ticker = $("ticker").value.trim().toUpperCase();
+  if (!ticker) return;
 
+  $("result").style.display = "none";
+  $("error").style.display = "none";
+  $("status").style.display = "block";
+  $("statusText").textContent = `AI sedang menganalisa ${ticker}...`;
+  $("submitBtn").disabled = true;
+  $("submitBtn").innerHTML = '<div class="spinner"></div>';
+
+  const prompt = `Kamu adalah analis saham profesional untuk Bursa Efek Indonesia (IDX).
+Analisa saham dengan kode "${ticker}".
+Gunakan data harga terkini dari hasil pencarian internet (harga penutupan terakhir, tren, volume, sentimen pasar).
+Tentukan apakah saham ini akan cenderung BULLISH (naik), BEARISH (turun), sebaiknya DIHINDARI (avoid) karena arah tidak jelas atau risiko terlalu tinggi, atau REBOUND (sedang turun tetapi punya potensi naik kembali — misal oversold, mantul dari support kuat, atau ada katalis positif).
+Berikan tepat 5 harga antrian beli (buy_queue) dalam Rupiah, level 1 (tertinggi) sampai 5 (terendah).
+Berikan tepat 3 harga antrian jual / target (sell_queue) dalam Rupiah, level 1 sampai 3.
+Berikan harga stop_loss dan risk_note.
+Semua penjelasan dalam Bahasa Indonesia. Harga dalam Rupiah (angka bulat).
+
+WAJIB jawab HANYA dengan JSON valid persis seperti format ini, tanpa teks tambahan:
+{
+  "verdict": "bull" | "bear" | "avoid" | "rebound",
+  "confidence": 0-100,
+  "summary": "ringkasan 2-4 kalimat",
+  "buy_queue": [{"level":1,"price":0},{"level":2,"price":0},{"level":3,"price":0},{"level":4,"price":0},{"level":5,"price":0}],
+  "sell_queue": [{"level":1,"price":0},{"level":2,"price":0},{"level":3,"price":0}],
+  "stop_loss": 0,
+  "risk_note": "catatan risiko singkat"
+}`;
+
+  try {
+    const res = await fetch(ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        tools: [{ google_search: {} }],
+      }),
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error("API error: " + res.status + " " + err.slice(0, 200));
+    }
+    const data = await res.json();
+    let text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    text = text.replace(/```json/gi, "").replace(/```/g, "").trim();
+    const obj = JSON.parse(text);
+    render(ticker, obj);
+  } catch (err) {
+    $("status").style.display = "none";
+    $("error").style.display = "block";
+    $("error").textContent = "Gagal menganalisa. Periksa API key & koneksi. (" + err.message + ")";
+  } finally {
+    $("submitBtn").disabled = false;
+    $("submitBtn").textContent = "Analisa";
+  }
+});
+
+function render(ticker, r) {
+  $("status").style.display = "none";
+  const verdict = r.verdict || "avoid";
+  const icon = { bull:"📈", bear:"📉", avoid:"⚠️", rebound:"🔄" }[verdict] || "⚠️";
+  const label = {
+    bull:"BULLISH — Cenderung Naik",
+    bear:"BEARISH — Cenderung Turun",
+    avoid:"HINDARI — Risiko Tinggi",
+    rebound:"POTENSI NAIK DARI TURUN",
+  }[verdict];
+
+  const sortQ = (q) => [...(q || [])].sort((a,b) => (a.level||0)-(b.level||0));
+  const buyRows = sortQ(r.buy_queue).map((i) =>
+    `<div class="qrow"><span class="qnum em">${i.level}</span><span class="qprice">${fmt(i.price)}</span></div>`).join("");
+  const sellRows = sortQ(r.sell_queue).map((i) =>
+    `<div class="qrow"><span class="qnum rd">${i.level}</span><span class="qprice">${fmt(i.price)}</span></div>`).join("");
+
+  $("result").innerHTML = `
+    <div class="verdict ${verdict}">
+      <div class="top"><span>${ticker}</span><span>Keyakinan ${Math.round(r.confidence||0)}%</span></div>
+      <div class="head"><div class="icon">${icon}</div><div class="label">${label}</div></div>
+      <p class="summary">${r.summary || ""}</p>
+    </div>
+    <div class="grid">
+      <div class="card"><h3>Rekomendasi Antrian Beli</h3><div class="qlist">${buyRows}</div></div>
+      <div class="card"><h3>Rekomendasi Antrian Jual</h3><div class="qlist">${sellRows}</div></div>
+    </div>
+    <div class="grid" style="margin-top:20px">
+      <div class="mini"><h3>Stop Loss</h3><div class="big">${fmt(r.stop_loss)}</div></div>
+      <div class="mini"><h3>Catatan Risiko</h3><p>${r.risk_note || ""}</p></div>
+    </div>
+  `;
+  $("result").style.display = "block";
+}
 </script>
-
 </body>
-</html>	
-	
+</html>
