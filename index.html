@@ -157,7 +157,21 @@ ANALISA SEKARANG
 </div>
 
 </div>
+<input type="file" id="upload" accept="image/*">
 
+<img id="preview"
+style="
+width:100%;
+margin-top:15px;
+border-radius:15px;
+display:none;
+">
+
+<button id="analisa">
+Analisa Screenshot
+</button>
+
+<div id="hasil"></div>
 <script>
 
 function analisa(){
@@ -165,7 +179,42 @@ function analisa(){
 document.getElementById("hasil").style.display="block";
 
 }
+	
+<script>
 
+const API_KEY="<script>
+
+const API_KEY="AQ.Ab8RN6I_p5aiwvCpOLzHsDDtvrcDESUdMZtSXLdggu9YVcDAqA";
+
+const upload=document.getElementById("upload");
+const preview=document.getElementById("preview");
+
+upload.onchange=e=>{
+
+const file=e.target.files[0];
+
+preview.src=URL.createObjectURL(file);
+
+preview.style.display="block";
+
+}
+
+</script>";
+
+const upload=document.getElementById("upload");
+const preview=document.getElementById("preview");
+
+upload.onchange=e=>{
+
+const file=e.target.files[0];
+
+preview.src=URL.createObjectURL(file);
+
+preview.style.display="block";
+
+}
+
+</script>
 </script>
 
 </body>
