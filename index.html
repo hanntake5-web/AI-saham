@@ -175,7 +175,51 @@ Analisa Screenshot
 <script>
 
 
-	
+
+const WEBAPP="https://script.google.com/macros/s/AKfycbw1NXR_EnmXsb1w_ChgtovCDG3kOgNlds_Jr9TSeDeNxF1InUprMPrlsM8S8op89ZRk/exec";
+
+const upload=document.getElementById("upload");
+const preview=document.getElementById("preview");
+const hasil=document.getElementById("hasil");
+const tombol=document.getElementById("analisa");
+
+let base64="";
+
+upload.onchange=(e)=>{
+  const file=e.target.files[0];
+  preview.src=URL.createObjectURL(file);
+  preview.style.display="block";
+
+  const reader=new FileReader();
+  reader.onload=()=>{
+    base64=reader.result.split(",")[1];
+  };
+  reader.readAsDataURL(file);
+};
+
+tombol.onclick=async()=>{
+
+  if(base64==""){
+    alert("Upload screenshot dulu");
+    return;
+  }
+
+  hasil.style.display="block";
+  hasil.innerHTML="🤖 AI sedang menganalisa...";
+
+  const res=await fetch(WEBAPP,{
+    method:"POST",
+    body:JSON.stringify({image:base64})
+  });
+
+  const data=await res.json();
+
+  hasil.innerHTML=data.hasil;
+
+};
+
+</script>
 
 </body>
-</html>
+</html>	
+	
